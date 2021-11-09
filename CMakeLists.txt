@@ -14,6 +14,11 @@ find_package(catkin REQUIRED)
 find_package(blasfeo REQUIRED)
 find_package(hpipm REQUIRED)
 
+# Manually set INCLUDE_DIRS and LIBRARIES since not handled in blasfeo and hpipm
+set(blasfeo_INCLUDE_DIRS /opt/blasfeo/include)
+set(hpipm_INCLUDE_DIRS /opt/hpipm/include)
+set(blasfeo_LIBRARIES /opt/blasfeo/lib/libblasfeo.a)
+set(hpipm_LIBRARIES /opt/hpipm/lib/libhpipm.a)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -104,7 +109,7 @@ catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES labrob_qpsolvers
 #  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
+  DEPENDS blasfeo hpipm
 )
 
 ###########
