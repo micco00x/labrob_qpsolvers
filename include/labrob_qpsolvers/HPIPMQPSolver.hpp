@@ -21,10 +21,13 @@
 namespace labrob {
 namespace qpsolvers {
 
-template <int numVariables, int numEqualityConstraints, int numInequalityConstraints>
-class HPIPMQPSolver : public QPSolver<double, numVariables, numEqualityConstraints, numInequalityConstraints> {
+
+class HPIPMQPSolver : public QPSolver<double> {
  public:
-  HPIPMQPSolver() {
+  HPIPMQPSolver(int numVariables, int numEqualityConstraints, int numInequalityConstraints) :
+  num_variables_(numVariables),
+  num_equality_constraints_(numEqualityConstraints),
+  num_inequality_constraints_(numInqualityConstraints) {
     int dim_size = d_dense_qp_dim_memsize();
     dim_mem_ = malloc(dim_size);
     d_dense_qp_dim_create(&dim_, dim_mem_);

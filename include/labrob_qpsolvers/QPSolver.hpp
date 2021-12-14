@@ -3,7 +3,7 @@
 namespace labrob {
 namespace qpsolvers {
 
-template <typename Scalar, int numVariables, int numEqualityConstraints, int numInequalityConstraints>
+template <typename Scalar>
 class QPSolver {
  public:
   virtual void solve(
@@ -15,6 +15,10 @@ class QPSolver {
       Scalar* d_min,
       Scalar* d_max) = 0;
   virtual Scalar* get_solution() const = 0;
+
+  const int num_variables_;
+  const int num_equality_constraints_;
+  const int num_inequality_constraints_;
 }; // end class QPSolver
 
 } // end namespace labrob::qpsolvers

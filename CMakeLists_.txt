@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.0.2)
+project(labrob_qpsolvers)
+
+## Compile as C++11, supported in ROS Kinetic and newer
+add_compile_options(-std=c++11)
+
+
+# Manually set INCLUDE_DIRS and LIBRARIES since not handled in blasfeo and hpipm
+set(blasfeo_INCLUDE_DIRS /opt/blasfeo/include)
+set(hpipm_INCLUDE_DIRS /opt/hpipm/include)
+set(blasfeo_LIBRARIES /opt/blasfeo/lib/libblasfeo.a)
+set(hpipm_LIBRARIES /opt/hpipm/lib/libhpipm.a)
+
+
+## Declare a C++ library
+add_library(${PROJECT_NAME} INTERFACE)
+
+target_include_directories(${PROJECT_NAME} INTERFACE
+        include/
+        ${blasfeo_INCLUDE_DIRS}
+        ${hpipm_INCLUDE_DIRS}
+)
+
+
+target_link_libraries(${PROJECT_NAME} INTERFACE
+  blasfeo
+  hpipm
+)
+
