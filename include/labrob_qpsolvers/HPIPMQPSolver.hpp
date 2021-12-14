@@ -25,9 +25,7 @@ namespace qpsolvers {
 class HPIPMQPSolver : public QPSolver<double> {
  public:
   HPIPMQPSolver(int numVariables, int numEqualityConstraints, int numInequalityConstraints) :
-  num_variables_(numVariables),
-  num_equality_constraints_(numEqualityConstraints),
-  num_inequality_constraints_(numInqualityConstraints) {
+  QPSolver<double>(numVariables, numEqualityConstraints, numInequalityConstraints) {
     int dim_size = d_dense_qp_dim_memsize();
     dim_mem_ = malloc(dim_size);
     d_dense_qp_dim_create(&dim_, dim_mem_);
@@ -67,29 +65,29 @@ class HPIPMQPSolver : public QPSolver<double> {
   }
 
   void solve(
-      double* H,
-      double* f,
-      double* A,
-      double* b,
-      double* C,
-      double* d_min,
-      double* d_max) override {
-    d_dense_qp_set_H(H, &qp_);
-    d_dense_qp_set_g(f, &qp_);
+      const double* H,
+      const double* f,
+      const double* A,
+      const double* b,
+      const double* C,
+      const double* d_min,
+      const double* d_max) override {
+    d_dense_qp_set_H((double*) H, &qp_);
+    d_dense_qp_set_g((double*) f, &qp_);
 
-    d_dense_qp_set_A(A, &qp_);
-    d_dense_qp_set_b(b, &qp_);
+    d_dense_qp_set_A((double*) A, &qp_);
+    d_dense_qp_set_b((double*) b, &qp_);
 
-    d_dense_qp_set_C(C, &qp_);
-    d_dense_qp_set_lg(d_min, &qp_);
-    d_dense_qp_set_ug(d_max, &qp_);
+    d_dense_qp_set_C((double*) C, &qp_);
+    d_dense_qp_set_lg((double*) d_min, &qp_);
+    d_dense_qp_set_ug((double*) d_max, &qp_);
 
     // solve QP
     d_dense_qp_ipm_solve(&qp_, &qp_sol_, &arg_, &workspace_);
     d_dense_qp_sol_get_v(&qp_sol_, u_);
   }
 
-  double* get_solution() const override {
+  const double* get_solution() const override {
     return u_;
   }
 

@@ -20,15 +20,18 @@ class QPSolverEigenWrapper {
 
   }
 
+  template <typename DerivedCostH, typename DerivedCostg,
+            typename DerivedEqA, typename DerivedEqb,
+            typename DerivedIneqC, typename DerivedIneqg>
   void
   solve(
-      Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& H,
-      Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& g,
-      Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& A,
-      Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& b,
-      Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& C,
-      Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& lg,
-      Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& ug) {
+      const Eigen::PlainObjectBase<DerivedCostH>& H,
+      const Eigen::PlainObjectBase<DerivedCostg>& g,
+      const Eigen::PlainObjectBase<DerivedEqA>& A,
+      const Eigen::PlainObjectBase<DerivedEqb>& b,
+      const Eigen::PlainObjectBase<DerivedIneqC>& C,
+      const Eigen::PlainObjectBase<DerivedIneqg>& lg,
+      const Eigen::PlainObjectBase<DerivedIneqg>& ug) {
     qp_solver_ptr_->solve(
         H.data(),
         g.data(),
@@ -42,7 +45,7 @@ class QPSolverEigenWrapper {
 
   Eigen::Matrix<Scalar, Eigen::Dynamic, 1>
   get_solution() {
-    Scalar* solution_ptr = qp_solver_ptr_->get_solution();
+    const auto* solution_ptr = qp_solver_ptr_->get_solution();
     const int num_variables = qp_solver_ptr_->num_variables_;
     Eigen::Matrix<Scalar, Eigen::Dynamic, 1> solution(num_variables);
     for (int idx = 0; idx < num_variables; ++idx) {
