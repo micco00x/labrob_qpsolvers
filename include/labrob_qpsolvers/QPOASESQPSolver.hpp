@@ -11,11 +11,15 @@
 namespace labrob {
 namespace qpsolvers {
 
-template <int numVariables, int numEqualityConstraints, int numInequalityConstraints>
-class QPOASESQPSolver : public QPSolver<double, numVariables, numEqualityConstraints, numInequalityConstraints>{
+template <>
+class QPOASESQPSolver : public QPSolver<double>{
  public:
-  QPOASESQPSolver(qpOASES::int_t nWSR = 300) : nWSR_(nWSR) {
-    constexpr int numConstraints = numEqualityConstraints + numInequalityConstraints;
+  QPOASESQPSolver(int numVariables, int numEqualityConstraints, int numInequalityConstraints, qpOASES::int_t nWSR = 300) :
+  nWSR_(nWSR),
+  num_variables_(numVariables),
+  num_equality_constraints_(numEqualityConstraints),
+  num_inequality_constraints_(numInqualityConstraints) {
+    const int numConstraints = numEqualityConstraints + numInequalityConstraints;
     qp_ = qpOASES::QProblem(numVariables, numConstraints);
     qpOASES::Options options;
     options.setToMPC();

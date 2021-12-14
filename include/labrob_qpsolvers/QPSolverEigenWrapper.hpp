@@ -12,23 +12,26 @@
 namespace labrob {
 namespace qpsolvers {
 
-template <typename Scalar, int numVariables, int numEqualityConstraints, int numInequalityConstraints>
+template <typename Scalar>
 class QPSolverEigenWrapper {
  public:
-  QPSolverEigenWrapper(std::shared_ptr<QPSolver<Scalar, numVariables, numEqualityConstraints, numInequalityConstraints>> qp_solver_ptr) :
+  QPSolverEigenWrapper(std::shared_ptr<QPSolver<Scalar>> qp_solver_ptr) :
       qp_solver_ptr_(qp_solver_ptr) {
 
   }
 
+  template <typename DerivedCostH, typename DerivedCostg,
+            typename DerivedEqA, typename DerivedEqb,
+            typename DerivedIneqC, typename DerivedIneqg>
   void
   solve(
-      Eigen::Matrix<Scalar, numVariables, numVariables>& H,
-      Eigen::Matrix<Scalar, numVariables, 1>& g,
-      Eigen::Matrix<Scalar, numEqualityConstraints, numVariables>& A,
-      Eigen::Matrix<Scalar, numEqualityConstraints, 1>& b,
-      Eigen::Matrix<Scalar, numInequalityConstraints, numVariables>& C,
-      Eigen::Matrix<Scalar, numInequalityConstraints, 1>& lg,
-      Eigen::Matrix<Scalar, numInequalityConstraints, 1>& ug) {
+      const Eigen::PlainObjectBase<DerivedCostH>& H,
+      const Eigen::PlainObjectBase<DerivedCostg>& g,
+      const Eigen::PlainObjectBase<DerivedEqA>& A,
+      const Eigen::PlainObjectBase<DerivedEqb>& b,
+      const Eigen::PlainObjectBase<DerivedIneqC>& C,
+      const Eigen::PlainObjectBase<DerivedIneqg>& lg,
+      const Eigen::PlainObjectBase<DerivedIneqg>& ug) {
     qp_solver_ptr_->solve(
         H.data(),
         g.data(),
@@ -40,18 +43,19 @@ class QPSolverEigenWrapper {
     );
   }
 
-  Eigen::Matrix<Scalar, numVariables, 1>
+  Eigen::Matrix<Scalar, Eigen::Dynamic, 1>
   get_solution() {
-    Scalar* solution_ptr = qp_solver_ptr_->get_solution();
-    Eigen::Matrix<Scalar, numVariables, 1> solution;
-    for (int idx = 0; idx < numVariables; ++idx) {
+    const auto* solution_ptr = qp_solver_ptr_->get_solution();
+    const int num_variables = qp_solver_ptr_->num_variables_;
+    Eigen::Matrix<Scalar, Eigen::Dynamic, 1> solution(num_variables);
+    for (int idx = 0; idx < num_variables; ++idx) {
       solution(idx) = *(solution_ptr + idx);
     }
     return solution;
   }
 
  private:
-  std::shared_ptr<QPSolver<Scalar, numVariables, numEqualityConstraints, numInequalityConstraints>> qp_solver_ptr_;
+  std::shared_ptr<QPSolver<Scalar>> qp_solver_ptr_;
 }; // end class QPSolverEigenWrapper
 
 } // end namespace qpsolvers
