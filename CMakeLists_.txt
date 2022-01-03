@@ -20,13 +20,14 @@ add_library(${PROJECT_NAME} INTERFACE)
 
 target_include_directories(${PROJECT_NAME} INTERFACE
         include/
-        ${blasfeo_INCLUDE_DIRS}
         ${hpipm_INCLUDE_DIRS}
+        ${blasfeo_INCLUDE_DIRS}
 )
 
 
 target_link_libraries(${PROJECT_NAME} INTERFACE
-        ${BLASFEO_LIB}
         ${HPIPM_LIB}
+        ${BLASFEO_LIB}
+
 )
 
